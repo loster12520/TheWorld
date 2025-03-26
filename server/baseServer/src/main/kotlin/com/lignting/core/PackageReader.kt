@@ -3,8 +3,8 @@ package com.lignting.core
 import java.lang.reflect.Modifier
 import com.lignting.annotations.Command
 import com.lignting.annotations.JsonParameter
-import com.lignting.annotations.Server
 import com.lignting.annotations.StringParameter
+import com.lignting.core.data.*
 import java.io.File
 import java.net.URLClassLoader
 import java.util.jar.JarFile
@@ -18,7 +18,7 @@ class PackageReader(private val file: File) {
     constructor(path: String) : this(File(path))
 
     private val classLoader = URLClassLoader(arrayOf(file.toURI().toURL()), Thread.currentThread().contextClassLoader)
-    val commandList = mutableListOf<Pair<CommandInformation, (List<String>) -> Any?>>()
+    val commandList = mutableListOf<CommandData>()
 
 
     fun init(): PackageReader {
@@ -75,19 +75,9 @@ class PackageReader(private val file: File) {
                                     it.invoke(it.declaringClass.getDeclaredConstructor().newInstance(), *parameters)
                             } ?: throw RuntimeException("Can't invoke ${kFunction.name}")
                         }
-                    }.also { commandList += it }
+                    }.also { commandList += it.map { CommandData(it.first, it.second) } }
             }
         }
         return this
-    }
-
-    data class CommandInformation(
-        val useSpace: String,
-        val name: String,
-        val parameters: List<ParameterData<*>>,
-    ) {
-        override fun toString(): String {
-            return "$useSpace: $name <${parameters.joinToString { "${it.name}: ${it::class.simpleName}" }}>"
-        }
     }
 }

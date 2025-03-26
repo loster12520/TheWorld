@@ -1,4 +1,4 @@
-package com.lignting.core
+package com.lignting.core.data
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken

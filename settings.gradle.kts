@@ -4,6 +4,7 @@ include(":client:commandLine")
 include(":server:baseServer")
 
 include(":plugins:test")
+include(":connectors:simpleCommandLineConnector")
 
 // 配置插件管理
 pluginManagement {
